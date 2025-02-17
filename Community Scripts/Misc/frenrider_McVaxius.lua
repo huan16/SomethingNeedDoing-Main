@@ -98,8 +98,9 @@ cling = ini_check("cling", 1) 								-- Distance to cling to fren when > bistan
 force_gyasahl = ini_check("force_gyasahl", false) 	   		-- force gysahl green usage . maybe cause problems in towns with follow
 clingtype = ini_check("clingtype", 0)						-- Clingtype, 0 = navmesh, 1 = visland, 2 = bmr follow leader, 3 = automaton autofollow, 4 = vanilla game follow
 clingtypeduty = ini_check("clingtypeduty", 2)				-- do we need a diff clingtype in duties? use same numbering as above 
-follow_in_combat = ini_check("follow_in_combat", 0)		-- 0 = dont follow the leader while in combat, 1 = follow the leader while in combat
+follow_in_combat = ini_check("follow_in_combat", 0)			-- 0 = dont follow the leader while in combat, 1 = follow the leader while in combat
 maxbistance = ini_check("maxbistance", 50) 					-- Max distance from fren that we will actually chase them, so that we dont get zone hopping situations ;p
+maxAIdistance = ini_check("maxAIdistance", 2.6) 			-- distance to be from targets in AI mode with BMR, i recommend 2.6 for melee and 10-15 for casters/healers/ranged
 limitpct = ini_check("limitpct", -1)						-- What percentage of life on target should we use LB at. It will automatically use LB3 if that's the cap or it will use LB2 if that's the cap, -1 disables it
 rotationplogon = ini_check("rotationplogon", "RSR")			-- Which plogon for rotations? valid options are BMR, VBM, RSR
 autorotationtype = ini_check("autorotationtype", "xan")		-- If we are using BossMod rotation, what preset name shall we use? use "none" to manually configure it yourself.  keep in mind you have to make the rotation and name it in the first place.  "xan" is what i call mine
@@ -158,6 +159,7 @@ yield("/wait 0.5")
 
 yield("/vbmai "..bossmodAI)
 yield("/bmrai "..bossmodAI)
+yield("/bmrai maxdistancetarget "..maxAIdistance)
 
 --rotation handling
 function rhandling()
@@ -282,6 +284,9 @@ function clingmove(nemm)
 	if (follow_in_combat == 1 and GetCharacterCondition(26) == true) or GetCharacterCondition(26) == false then
 		allowmovement = 1
 	end
+	if allowmovement == 0 and GetCharacterCondition(26) == true then
+		yield("/vnav stop")
+	end
 	if allowmovement == 1 then
 		--navmesh
 		if zclingtype == 0 then
@@ -352,6 +357,7 @@ zoi = {
 1043,--meridianum
 171,--dzemael
 1041,--brayflox
+1040,--hawk tua manner
 1245--halatali
 }
 
