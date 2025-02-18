@@ -461,7 +461,9 @@ while weirdvar == 1 do
 				--continually try to dismount
 				--bmr follow off.
 				yield("/bmrai follow slot1")
-				yield("/ac dismount")
+				if GetZoneID() != 1044 then
+					yield("/ac dismount")
+				end
 				yield("/wait 0.5")
 				rhandling()
 			end
