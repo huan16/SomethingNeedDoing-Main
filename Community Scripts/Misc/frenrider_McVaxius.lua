@@ -109,6 +109,7 @@ bossmodAI = ini_check("bossmodAI", "on")					-- do we want bossmodAI to be "on" 
 xpitem = ini_check("xpitem", 0)								-- xp item - attemp to equip whenever possible azyma_earring = 41081 btw, if this value is 0 it won't do anything
 feedme = ini_check("feedme", 4650)							-- eatfood, in this case itemID 4650 which is "Boiled Egg", use simpletweaks to show item IDs it won't try to eat if you have 0 of said food item
 feedmeitem = ini_check("feedmeitem", "Boiled Egg")			-- eatfood, in this case the item name. for now this is how we'll do it. it isn't pretty but it will work.. for now..
+companionstrat = ini_check("companionstrat", "Free Stance") -- chocobo strat to use . Valid options are: "Follow", "Free Stance", "Defender Stance", "Healer Stance", "Attacker Stance"
 --feedmeitem = ini_check("feedmeitem", "Baked Eggplant<hq>")-- eatfood, in this case the item name add a <hq> at the end if you want it to be hq. for now this is how we'll do it. it isn't pretty but it will work.. for now..
 timefriction = ini_check("timefriction", 1)					-- how long to wait between "tics" of the main loop? 1 second default. smaller values will have potential crashy / fps impacts.
 formation = ini_check("formation", false)					-- Follow in formation? If false, then it will "cling"
@@ -358,6 +359,7 @@ zoi = {
 171,--dzemael
 1041,--brayflox
 1040,--hawk tua manner
+1036,--cuckstasha
 1245--halatali
 }
 
@@ -621,6 +623,7 @@ while weirdvar == 1 do
 								yield("/vnavmesh stop")
 								yield("/item Gysahl Greens")
 								yield("/wait 3")
+								yield("/cac \""..companionstrat.."\"")
 							end
 						end
 						--yield("/target <cross>")
