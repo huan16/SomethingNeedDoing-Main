@@ -690,7 +690,7 @@ function try_to_buy_fuel(restock_amt)
 	numeric_fcpoynts = tonumber(clean_fcpoynts)
 	
 	restock_amt = restock_amt - curFuel
-	numeric_fcpoynts < 100 then
+	if numeric_fcpoynts < 100 then
 		yield("/echo We don't have enough FC points to even buy 1 tank of Fuel")
 		loggabunga("FUTA_"," - Not enough FC points to buy fuel -> "..FUTA_processors[hoo_arr_weeeeee][1][1])
 	end
