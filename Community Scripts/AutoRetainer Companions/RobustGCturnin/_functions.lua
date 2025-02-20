@@ -659,6 +659,10 @@ function getRandomNumber(min, max)
   return math.random(min,max)
 end
 
+function round(n)
+  return math.floor(n + 0.5)
+end
+
 function try_to_buy_fuel(restock_amt)
 	--target mammet
 	yield("/wait 5")
@@ -678,32 +682,54 @@ function try_to_buy_fuel(restock_amt)
 	curFuel = GetItemCount(10155)
 	oldFuel = curFuel + 1
 	buyfail = 0 --counter
-	while curFuel < restock_amt do
-		buyamt = 99 --this can be set to 231u if you want but i wouldn't recommend it as it shows on lodestone
-		if (restock_amt - curFuel) < 99 then
-			buyamt = restock_amt - curFuel
+
+	--get and set FC points
+	yield("/freecompanycmd <wait.1>")
+	fcpoynts = GetNodeText("FreeCompany", 15)
+	clean_fcpoynts = fcpoynts:gsub(",", "")
+	numeric_fcpoynts = tonumber(clean_fcpoynts)
+	
+	restock_amt = restock_amt - curFuel
+	
+	if numeric_fcpoynts > 100 and GetItemCount(10155) < restock_amt then --can we buy at least 1 fuel tank?
+		while numeric_fcpoynts > 100 do
+			buyamt = 99
+			if numeric_fcpoynts < 99 then
+				buyamt = round(numeric_fcpoynts / 100)
+			end
+			numeric_fcpoynts = numeric_fcpoynts - buyamt
+			yield("/callback FreeCompanyCreditShop false 0 0u "..buyamt.."u") 
+			yield("/wait 1")
 		end
-		yield("/callback FreeCompanyCreditShop false 0 0u "..buyamt.."u") 
-		yield("/wait 0.5")
-		if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
-		yield("/wait 1")
-		--if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
-		oldFuel = curFuel
-		curFuel = GetItemCount(10155)
-		yield("/echo Current Fuel -> "..curFuel.." Old Fuel -> "..oldFuel)
-		if oldFuel < curFuel then
-			buyfail = 0
-		end
-		if oldFuel == curFuel then
-			buyfail = buyfail + 1
-			yield("/echo We might be out of FC points ?")
-			if buyfail > 3 then
-				curFuel = restock_amt
-				yield("/echo we ran out of FC points before finishing our purchases :(")
+--[[ --this is obselete now we have the FC point amount
+		while curFuel < restock_amt do
+			buyamt = 99 --this can be set to 231u if you want but i wouldn't recommend it as it shows on lodestone
+			if (restock_amt - curFuel) < 99 then
+				buyamt = restock_amt - curFuel
+			end
+			yield("/callback FreeCompanyCreditShop false 0 0u "..buyamt.."u") 
+			yield("/wait 0.5")
+			if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
+			yield("/wait 1")
+			--if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
+			oldFuel = curFuel
+			curFuel = GetItemCount(10155)
+			yield("/echo Current Fuel -> "..curFuel.." Old Fuel -> "..oldFuel)
+			if oldFuel < curFuel then
+				buyfail = 0
+			end
+			if oldFuel == curFuel then
+				buyfail = buyfail + 1
+				yield("/echo We might be out of FC points ?")
+				if buyfail > 3 then
+					curFuel = restock_amt
+					yield("/echo we ran out of FC points before finishing our purchases :(")
+				end
 			end
 		end
+--]]
+		yield("/echo We now have "..GetItemCount(10155).." Ceruelum Fuel Tanks")
 	end
-	yield("/echo We now have "..GetItemCount(10155).." Ceruelum Fuel Tanks")
 	ungabunga()
 end
 
