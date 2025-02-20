@@ -112,7 +112,7 @@ feedmeitem = ini_check("feedmeitem", "Boiled Egg")			-- eatfood, in this case th
 companionstrat = ini_check("companionstrat", "Free Stance") -- chocobo strat to use . Valid options are: "Follow", "Free Stance", "Defender Stance", "Healer Stance", "Attacker Stance"
 --feedmeitem = ini_check("feedmeitem", "Baked Eggplant<hq>")-- eatfood, in this case the item name add a <hq> at the end if you want it to be hq. for now this is how we'll do it. it isn't pretty but it will work.. for now..
 timefriction = ini_check("timefriction", 1)					-- how long to wait between "tics" of the main loop? 1 second default. smaller values will have potential crashy / fps impacts.
-formation = ini_check("formation", false)					-- Follow in formation? If false, then it will "cling"
+formation = ini_check("formation", false)					-- Follow in formation? If false, then it will "cling", valid values are true or false
 						--[[
 						Like this -> . so that 1 is the main tank and the party will always kind of make this formation during combat
 						8	1	5
