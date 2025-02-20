@@ -694,7 +694,7 @@ function try_to_buy_fuel(restock_amt)
 	if numeric_fcpoynts > 100 and GetItemCount(10155) < restock_amt then --can we buy at least 1 fuel tank?
 		while numeric_fcpoynts > 100 do
 			buyamt = 99
-			if numeric_fcpoynts < 99 then
+			if numeric_fcpoynts < 9900 then
 				buyamt = round(numeric_fcpoynts / 100)
 			end
 			numeric_fcpoynts = numeric_fcpoynts - buyamt
