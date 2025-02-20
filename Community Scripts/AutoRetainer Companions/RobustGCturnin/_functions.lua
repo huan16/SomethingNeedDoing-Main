@@ -697,7 +697,8 @@ function try_to_buy_fuel(restock_amt)
 			if numeric_fcpoynts < 9900 then
 				buyamt = round(numeric_fcpoynts / 100)
 			end
-			numeric_fcpoynts = numeric_fcpoynts - buyamt
+			numeric_fcpoynts = numeric_fcpoynts - (buyamt * 100)
+			yield("/echo Attempting to buy "..buyamt.." Fuel Tanks")
 			yield("/callback FreeCompanyCreditShop false 0 0u "..buyamt.."u") 
 			yield("/wait 1")
 		end
