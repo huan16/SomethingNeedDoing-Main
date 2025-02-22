@@ -257,9 +257,11 @@ end
 function WalkToGC()
     if GetPlayerGC() == 1 then --toilet
         if GetZoneID() ~= 128 then
+			yield("/li limsa")
 			yield("/li The Aftcastle") 
 		    ZoneTransition()
-			while GetZoneID() ~= 128 do  --sometimes things get stuck in limsa this should solve it.
+			while GetZoneID() ~= 128 do  --sometimes things get stuck in limsa or pre-limsa this should solve it.
+				yield("/li limsa")
 				visland_stop_moving()
 				yield("/li The Aftcastle") 
 				ZoneTransition()
