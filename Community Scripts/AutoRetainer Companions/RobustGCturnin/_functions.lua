@@ -708,8 +708,7 @@ function try_to_buy_fuel(restock_amt)
 			yield("/echo We don't have enough FC points to even buy 1 tank of Fuel")
 			loggabunga("FUTA_"," - Not enough FC points to buy fuel -> "..FUTA_processors[hoo_arr_weeeeee][1][1])
 		end
-		if numeric_fcpoynts > 100 and GetItemCount(10155) < restock_amt then --can we buy at least 1 fuel tank?
-			while numeric_fcpoynts > 100 do
+		while numeric_fcpoynts > 100 and GetItemCount(10155) < restock_amt do --can we buy at least 1 fuel tank?
 				buyamt = 99
 				if numeric_fcpoynts < 9900 then
 					buyamt = round(numeric_fcpoynts / 100)
@@ -718,7 +717,6 @@ function try_to_buy_fuel(restock_amt)
 				yield("/echo Attempting to buy "..buyamt.." Fuel Tanks")
 				yield("/callback FreeCompanyCreditShop false 0 0u "..buyamt.."u") 
 				yield("/wait 1")
-			end
 	--[[ --this is obselete now we have the FC point amount
 			while curFuel < restock_amt do
 				buyamt = 99 --this can be set to 231u if you want but i wouldn't recommend it as it shows on lodestone
