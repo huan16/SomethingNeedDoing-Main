@@ -107,6 +107,7 @@ autorotationtype = ini_check("autorotationtype", "xan")		-- If we are using Boss
 rotationtype = ini_check("rotationtype", "Auto")			-- What RSR type shall we use?  Auto or Manual are common ones to pick. if you choose "none" it won't change existing setting.
 bossmodAI = ini_check("bossmodAI", "on")					-- do we want bossmodAI to be "on" or "off"
 xpitem = ini_check("xpitem", 0)								-- xp item - attemp to equip whenever possible azyma_earring = 41081 btw, if this value is 0 it won't do anything
+repair = ini_check("repair", 0)								-- 0 = no, 1 = self repair always, 2 = repair if we are in an inn using the inn npc
 feedme = ini_check("feedme", 4650)							-- eatfood, in this case itemID 4650 which is "Boiled Egg", use simpletweaks to show item IDs it won't try to eat if you have 0 of said food item
 feedmeitem = ini_check("feedmeitem", "Boiled Egg")			-- eatfood, in this case the item name. for now this is how we'll do it. it isn't pretty but it will work.. for now..
 companionstrat = ini_check("companionstrat", "Free Stance") -- chocobo strat to use . Valid options are: "Follow", "Free Stance", "Defender Stance", "Healer Stance", "Attacker Stance"
@@ -157,6 +158,7 @@ yield("/echo Starting fren rider")
 --yield("/target \""..fren.."\"")
 yield("/wait 0.5")
 --yield("/mk cross <t>")
+yield("/xldisableplugin AutoDuty")  --this will cause grief if it is enabled
 
 yield("/vbmai "..bossmodAI)
 yield("/bmrai "..bossmodAI)
@@ -360,6 +362,7 @@ zoi = {
 1041,--brayflox
 1040,--hawk tua manner
 1036,--cuckstasha
+434,--busk bigil
 1245--halatali
 }
 
