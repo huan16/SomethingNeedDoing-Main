@@ -363,6 +363,7 @@ zoi = {
 1040,--hawk tua manner
 1036,--cuckstasha
 434,--busk bigil
+1113,--xelphatol
 1245--halatali
 }
 
