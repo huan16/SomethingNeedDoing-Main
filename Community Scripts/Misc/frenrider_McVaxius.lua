@@ -107,7 +107,8 @@ autorotationtype = ini_check("autorotationtype", "xan")		-- If we are using Boss
 rotationtype = ini_check("rotationtype", "Auto")			-- What RSR type shall we use?  Auto or Manual are common ones to pick. if you choose "none" it won't change existing setting.
 bossmodAI = ini_check("bossmodAI", "on")					-- do we want bossmodAI to be "on" or "off"
 xpitem = ini_check("xpitem", 0)								-- xp item - attemp to equip whenever possible azyma_earring = 41081 btw, if this value is 0 it won't do anything
-repair = ini_check("repair", 0)								-- 0 = no, 1 = self repair always, 2 = repair if we are in an inn using the inn npc
+repair = ini_check("repair", 0)								-- 0 = no, 1 = self repair always, 2 = repair if we are in an inn using the inn npc, dont use option 2 unless you are leaving your char in the inn perpetually
+tornclothes = ini_check("tornclothes", 0)					-- if we are repairing what pct to repair at
 feedme = ini_check("feedme", 4650)							-- eatfood, in this case itemID 4650 which is "Boiled Egg", use simpletweaks to show item IDs it won't try to eat if you have 0 of said food item
 feedmeitem = ini_check("feedmeitem", "Boiled Egg")			-- eatfood, in this case the item name. for now this is how we'll do it. it isn't pretty but it will work.. for now..
 companionstrat = ini_check("companionstrat", "Free Stance") -- chocobo strat to use . Valid options are: "Follow", "Free Stance", "Defender Stance", "Healer Stance", "Attacker Stance"
@@ -589,6 +590,66 @@ while weirdvar == 1 do
 				--the code block that got this all started haha
 				--follow and mount fren
 				if GetCharacterCondition(26) == false then --not in combat
+					--process repair stuff
+					if repair > 0 then
+						if repair == 1 then
+							if NeedsRepair(tornclothes) and GetItemCount(1) > 4999 and GetCharacterCondition(34) == false and GetCharacterCondition(56) == false then --only do this outside of a duty yo
+								yield("/ad repair")
+								goatcounter = 0
+								for goatcounter=1,30 do
+									yield("/wait 0.5")
+									yield("/callback _Notification true 0 17")
+									yield("/callback ContentsFinderConfirm true 9")
+								end
+								yield("/ad stop")
+							end
+						end
+						if repair == 2 then
+							--JUST OUTSIDE THE INN REPAIR
+							if NeedsRepair(tornclothes) and GetItemCount(1) > 4999 and GetCharacterCondition(34) == false and GetCharacterCondition(56) == false then --only do this outside of a duty yo
+								yield("/ad repair")
+								goatcounter = 0
+								for goatcounter=1,30 do
+									yield("/wait 0.5")
+									yield("/callback _Notification true 0 17")
+									yield("/callback ContentsFinderConfirm true 9")
+								end
+								yield("/ad stop")
+							end
+							--reenter the inn room
+							--if (GetZoneID() ~= 177 and GetZoneID() ~= 178) and GetCharacterCondition(34) == false and NeedsRepair(50) == false then
+							if (GetZoneID() ~= 177 and GetZoneID() ~= 178 and GetZoneID() ~= 179) and GetCharacterCondition(34) == false and IsPlayerAvailable() then
+								yield("/send ESCAPE")
+								yield("/ad stop") --seems to be needed or we get stuck in repair genjutsu
+								yield("/target Antoinaut") --gridania
+								yield("/target Mytesyn")   --limsa
+								yield("/target Otopa")     --uldah
+								yield("/wait 1")
+								if type(GetCharacterCondition(34)) == "boolean" and  GetCharacterCondition(34) == false and IsPlayerAvailable() then
+									yield("/lockon on")
+									yield("/automove")
+								end
+								yield("/wait 2.5")
+								if type(GetCharacterCondition(34)) == "boolean" and  GetCharacterCondition(34) == false and IsPlayerAvailable() then
+									yield("/callback _Notification true 0 17")
+									yield("/callback ContentsFinderConfirm true 9")
+									yield("/interact")
+								end
+								yield("/wait 1")
+								if type(GetCharacterCondition(34)) == "boolean" and  GetCharacterCondition(34) == false and IsPlayerAvailable() then
+									yield("/callback _Notification true 0 17")
+									yield("/callback ContentsFinderConfirm true 9")
+									yield("/callback SelectIconString true 0")
+									yield("/callback _Notification true 0 17")
+									yield("/callback ContentsFinderConfirm true 9")
+									yield("/callback SelectString true 0")
+									yield("/wait 1")
+								end
+								--yield("/wait 8")
+								--RestoreYesAlready()
+							end
+						end					
+					end
 					if GetCharacterCondition(4) == true and fly_you_fools == true then
 						--follow the fren
 						if GetCharacterCondition(4) == true and bistance > cling and PathIsRunning() == false and PathfindInProgress() == false then
