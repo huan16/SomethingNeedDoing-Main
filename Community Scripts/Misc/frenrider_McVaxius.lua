@@ -31,14 +31,13 @@ lazyloot plugin (if your doing anything other than fates)
 VBM/BMR (bmr has slash commands for following and more modules)
 RSR
 
-***Few annoying problems that still exist
-*dont follow during combat unless non caster. will require bmr contemplation - seems bmr has contemplated it with distance command will consider adding new setting for this :~D
-
+***Few annoying problems that still exist and some thoughts
 *how do we change instances #s maybe custom chat commands? lifestream /li # works. now to add nodetext scanning for group. also have to use target and lockon until lim fixes /li x without los
 	this is insanely buggy and perhaps crashy.. nodetext scanning too fast will break things
 
 *it still doesnt follow in some weird cases
 	figured this out. if the party leader doesnt enter zone first, the other party members may fail to recalibrate to follow
+	this is mostly fixed. but sub area transitions still problem. maybe just walk forwards for 3 seconds if party leader distance has changed by more than 10 yalms since the last check?
 
 *lazyloot is a toggle not on or off so you have to turn it on yourself
 
@@ -52,8 +51,6 @@ reason is i wanted to smartly auto equip xp gear based on your current synced le
 I will do it a bit later once i uhh. make a lookup table for this trash here:
 0123456789
 
-
-*some people have incorrect auto interaction settings in pandora.. next time im playing actively ill add a new config option for that to set or not set the interaction settings.
 ]]
 
 --*****************************************************************
