@@ -35,10 +35,6 @@ RSR
 *how do we change instances #s maybe custom chat commands? lifestream /li # works. now to add nodetext scanning for group. also have to use target and lockon until lim fixes /li x without los
 	this is insanely buggy and perhaps crashy.. nodetext scanning too fast will break things
 
-*it still doesnt follow in some weird cases
-	figured this out. if the party leader doesnt enter zone first, the other party members may fail to recalibrate to follow
-	this is mostly fixed. but sub area transitions still problem. maybe just walk forwards for 3 seconds if party leader distance has changed by more than 10 yalms since the last check?
-
 *lazyloot is a toggle not on or off so you have to turn it on yourself
 
 *we can't get synced level (yet) I managed to isolate the part with nodetext but its using weird special characters i dont know how to convert to real numbers
@@ -289,6 +285,12 @@ function clingmove(nemm)
 		yield("/vnav stop")
 	end
 	if allowmovement == 1 then
+		--sub-area-transition-hack-while-in-duty
+		if bistance > 20 and GetCharacterCondition(34) == true then --maybe we went through subarea transition in a duty?
+			yield("/echo "..nemm.." is kind of far - lets just forge ahead a bit just in case")
+			yield("/hold W <wait.3.0>")
+			yield("/release W")
+		end
 		--navmesh
 		if zclingtype == 0 then
 			--DEBUG
