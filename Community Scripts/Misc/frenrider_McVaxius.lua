@@ -158,7 +158,7 @@ yield("/echo Starting fren rider")
 --yield("/target \""..fren.."\"")
 yield("/wait 0.5")
 --yield("/mk cross <t>")
-yield("/xldisableplugin AutoDuty")  --this will cause grief if it is enabled
+--yield("/xldisableplugin AutoDuty")  --this will cause grief if it is enabled
 
 yield("/vbmai "..bossmodAI)
 yield("/bmrai "..bossmodAI)
