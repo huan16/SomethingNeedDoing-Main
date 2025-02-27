@@ -260,7 +260,12 @@ function WalkToGC()
 			yield("/li limsa")
 			yield("/li The Aftcastle") 
 		    ZoneTransition()
+			toiletvisitor = 0
 			while GetZoneID() ~= 128 do  --sometimes things get stuck in limsa or pre-limsa this should solve it.
+				toiletvisitor = toiletvisitor + 1
+				if toiletvisitor > 5 then
+					yield("/pcraft stop")
+				end
 				yield("/li limsa")
 				visland_stop_moving()
 				yield("/li The Aftcastle") 
