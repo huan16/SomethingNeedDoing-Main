@@ -7,7 +7,7 @@ purpose: help autoduty with farming duties.
 design: it will run 99 prae, and then run decumana until reset time (1 am PDT) and reset the counter and go back to farming prae.
 
 Plugins/configs (ill update as people realize i forgot instructions)
-Automaton
+Automaton (Now called CBT)
 Some form of bossmod
 Rotation Solver Reborn
 Vnavmesh
