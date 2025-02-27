@@ -89,7 +89,7 @@ finickyclothes = 0 --0 = dont auto equip, 1 = autoequip, useful if you have bis 
 bm_preset = "none" --if you set it to "none" it wont use bmr and instead it will use RSR. this is for the preset to use.
 
 --debug/dont-touch-settings-unless-you-know-whats-up
-itworksonmymachine = 1 --0 means use ad start, 1 means use the callback and snd function method(s) for queueing into porta/prae
+itworksonmymachine = 0 --0 means use ad start (pre-select "regular" mode first in ad), 1 means use the callback and snd function method(s) for queueing into porta/prae.   it no longer works on my machine and i suspect it won't on others too haha
 hardened_sock = 1200 		 --bailout from duty in 1200 seconds (20 minutes)
 echo_level = 3 		 --3 only show important stuff, 2 show the progress messages, 1 show more, 0 show all
 debug_counter = 0 --if this is >0 then subtract from the total duties . useful for checking for crashes just enter in the duty_counter value+1 of the last crash, so if you crashed at duty counter 5, enter in a 6 for this value
