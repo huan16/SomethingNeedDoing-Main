@@ -742,6 +742,7 @@ function RepairExtractReduceCheck()
             end
             Id_Print("Attempting to extract materia...")
             yield("/generalaction \"Materia Extraction\"")
+            yield("/wait " .. interval_rate * 30)
             yield("/waitaddon Materialize")
 
             while CanExtractMateria(100) == true do
