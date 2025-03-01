@@ -93,6 +93,8 @@ clingtype = ini_check("clingtype", 0)						-- Clingtype, 0 = navmesh, 1 = vislan
 clingtypeduty = ini_check("clingtypeduty", 2)				-- do we need a diff clingtype in duties? use same numbering as above 
 follow_in_combat = ini_check("follow_in_combat", 0)			-- 0 = dont follow the leader while in combat, 1 = follow the leader while in combat
 maxbistance = ini_check("maxbistance", 50) 					-- Max distance from fren that we will actually chase them, so that we dont get zone hopping situations ;p
+ddistance = ini_check("ddistance", 100) 					-- DEEP DUNGEON RELATED - if your in a deep dungeon should we even follow? add this to "cling" if we are in a DD, 100 is default but still testing what is a good default.
+fdistance = ini_check("fdistance", 0) 						-- F.A.T.E. related - if your in a fate, add some more padding to "cling" default is 20 for now until some testing is done
 maxAIdistance = ini_check("maxAIdistance", 2.6) 			-- distance to be from targets in AI mode with BMR, i recommend 2.6 for melee and 10-15 for casters/healers/ranged
 limitpct = ini_check("limitpct", -1)						-- What percentage of life on target should we use LB at. It will automatically use LB3 if that's the cap or it will use LB2 if that's the cap, -1 disables it
 rotationplogon = ini_check("rotationplogon", "RSR")			-- Which plogon for rotations? valid options are BMR, VBM, RSR
@@ -189,6 +191,41 @@ end
 ----INIT END----
 ----------------
 
+----------------
+----MISC VAR----
+----------------
+are_we_DD = 0 --no we aren't in a deep dungeon
+hcling = cling --harmonized cling for situations where we want to modify the cling value temporarily such as deep dungeon or fates
+weirdvar = 1
+shartycardinality = 2 -- leader
+partycardinality = 2 -- me
+fartycardinality = 2 --leader ui cardinality
+autotosscount = 0 --i forget its something . i think discard counter
+did_we_toggle = 0 --so we aren't setting this setting multiple times. breaking its ability to function or causing ourselves a crash maybe
+
+pandora_interact_toggler_count = 0 -- for checking on pandora interact settings.
+pandora_interact_toggler_count = 0 -- for checking on pandora interact settings.
+
+--zones of interact --rule - only put zones that require everyone in party to interact. if its party leader only. dont do it.
+zoi = {
+1044,--praetorium
+1043,--meridianum
+171,--dzemael
+1037,--totorak
+1041,--brayflox
+1063,--keeper of the lake
+1040,--hawk tua manner
+1036,--cuckstasha
+434,--busk bigil
+1063,--snowcuck
+1113,--xelphatol --problem. fix later  dont wanna interact with lifts
+1245--halatali
+}
+----------------
+----MISC END----
+----------------
+
+--The Distance Function. the meat and potatos of this script
 --why is this so complicated? well because sometimes we get bad values and we need to sanitize that so snd does not STB (shit the bed)
 function distance(x1, y1, z1, x2, y2, z2)
 	if type(x1) ~= "number" then x1 = 0 end
@@ -227,16 +264,16 @@ function calculateOffset(followerIndex, leaderRotation)
     -- Adjust offsetX and offsetY based on formation layout and leader's facing direction
     if followerIndex == 1 then
         -- Example: Adjust offsetX and offsetY for follower 1
-        offsetX, offsetY = -1 * cling * 2, cling * 2
+        offsetX, offsetY = -1 * hcling * 2, hcling * 2
     elseif followerIndex == 2 then
         -- Example: Adjust offsetX and offsetY for follower 2
-        offsetX, offsetY = 0, cling * 2
+        offsetX, offsetY = 0, hcling * 2
     elseif followerIndex == 3 then
         -- Example: Adjust offsetX and offsetY for follower 3
-        offsetX, offsetY = cling * 2, cling * 2
+        offsetX, offsetY = hcling * 2, hcling * 2
     elseif followerIndex == 4 then
         -- Example: Adjust offsetX and offsetY for follower 4
-        offsetX, offsetY = -1 * cling * 2, 0
+        offsetX, offsetY = -1 * hcling * 2, 0
     -- Handle other follower indexes similarly
     end
     
@@ -259,7 +296,25 @@ function moveToFormationPosition(followerIndex, leaderX, leaderY, leaderZ, leade
     PathfindAndMoveTo(targetX, targetY, leaderZ, false)
 end
 
+function checkAREA()
+	are_we_DD = 0 --always reset this just in case
+	hcling = cling
+	--check if we are in a deep dungeon
+	if IsAddonVisible("DeepDungeonMap") then
+--		if IsAddonReady("DeepDungeonMap") then
+			are_we_DD = 1
+			hcling = cling + ddistance
+			--yield("/echo we in DD -> hcling is 0> "..hcling)
+--		end
+	end
+	--check if we are in a F.A.T.E.
+	if IsInFate() == true then
+		hcling = cling + fdistance
+	end
+end
+
 function clingmove(nemm)
+	checkAREA()
 	if GetTargetName() == "Vault Door" then --we in a treasure map dungeon and need to click the door without following the fren
 		yield("/interact")
 		yield("/wait 5")
@@ -286,10 +341,12 @@ function clingmove(nemm)
 	end
 	if allowmovement == 1 then
 		--sub-area-transition-hack-while-in-duty
-		if bistance > 20 and GetCharacterCondition(34) == true then --maybe we went through subarea transition in a duty?
-			yield("/echo "..nemm.." is kind of far - lets just forge ahead a bit just in case")
-			yield("/hold W <wait.3.0>")
-			yield("/release W")
+		if are_we_DD == 0 then
+			if bistance > 20 and GetCharacterCondition(34) == true then --maybe we went through subarea transition in a duty?
+				yield("/echo "..nemm.." is kind of far - lets just forge ahead a bit just in case")
+				yield("/hold W <wait.3.0>")
+				yield("/release W")
+			end
 		end
 		--navmesh
 		if zclingtype == 0 then
@@ -344,29 +401,6 @@ function clingmove(nemm)
 		end
 	end
 end
-
-weirdvar = 1
-shartycardinality = 2 -- leader
-partycardinality = 2 -- me
-fartycardinality = 2 --leader ui cardinality
-autotosscount = 0
-did_we_toggle = 0 --so we aren't setting this setting multiple times. breaking its ability to function or causing ourselves a crash maybe
-
-pandora_interact_toggler_count = 0 -- for checking on pandora interact settings.
---zones of interact --rule - only put zones that require everyone in party to interact. if its party leader only. dont do it.
-pandora_interact_toggler_count = 0 -- for checking on pandora interact settings.
-zoi = {
-1044,--praetorium
-1043,--meridianum
-171,--dzemael
-1037,--totorak
-1041,--brayflox
-1040,--hawk tua manner
-1036,--cuckstasha
-434,--busk bigil
-1113,--xelphatol
-1245--halatali
-}
 
 we_are_in = GetZoneID()
 we_were_in = GetZoneID()
@@ -454,7 +488,7 @@ while weirdvar == 1 do
 			end
 
 			--renav condition while in a duty. if we stuck for more than 10 seconds in place. renav damnit
-			if GetCharacterCondition(4) == true and bistance > cling and GetCharacterCondition(34) == true then 
+			if GetCharacterCondition(4) == true and bistance > hcling and GetCharacterCondition(34) == true then 
 				renav_check = renav_check + 1
 				if renav_check > 10 then
 					renav_check = 0
@@ -537,7 +571,7 @@ while weirdvar == 1 do
 				--movement without formation
 				if GetCharacterCondition(26) == true and formation == false then --in combat
 					if formation == false then
-						if bistance > cling and bistance < maxbistance then
+						if bistance > hcling and bistance < maxbistance then
 						--yield("/target \""..fren.."\"")
 							--PathfindAndMoveTo(GetObjectRawXPos(fren),GetObjectRawYPos(fren),GetObjectRawZPos(fren), false)
 							clingmove(fren) --movement func
@@ -653,7 +687,7 @@ while weirdvar == 1 do
 					end
 					if GetCharacterCondition(4) == true and fly_you_fools == true then
 						--follow the fren
-						if GetCharacterCondition(4) == true and bistance > cling and PathIsRunning() == false and PathfindInProgress() == false then
+						if GetCharacterCondition(4) == true and bistance > hcling and PathIsRunning() == false and PathfindInProgress() == false then
 							--yield("/echo attempting to fly to fren")
 							--bmr follow on. we comin
 							--yield("/bmrai follow slot"..fartycardinality)
@@ -698,7 +732,7 @@ while weirdvar == 1 do
 						if formation == false then
 							--check distance to fren, if its more than cling, then
 							bistance = distance(GetPlayerRawXPos(), GetPlayerRawYPos(), GetPlayerRawZPos(), GetObjectRawXPos(fren),GetObjectRawYPos(fren),GetObjectRawZPos(fren))
-							if bistance > cling and bistance < maxbistance then
+							if bistance > hcling and bistance < maxbistance then
 							--yield("/target \""..fren.."\"")
 								--PathfindAndMoveTo(GetObjectRawXPos(fren),GetObjectRawYPos(fren),GetObjectRawZPos(fren), false)
 								clingmove(fren) --movement func

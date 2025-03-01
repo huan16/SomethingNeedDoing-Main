@@ -46,6 +46,11 @@ BLU BLU BLU BLU or some combination of BST/BLU
 
 (yeah right hahaha.)
 
+random thoughts
+I figured out how to get ad to do unsync+level sync
+you first setup unsync+level sync . since it will never unhceck level sync. then tick unsync for regular duty prae
+and then let goon do its thing
+minor qol just to see the times in a nice chat window
 --]]
 yield("/echo please get ready for G.O.O.N ing time")
 --yield("/bmrai ui") --open this in case we need to set the preset. at least until we can slash command it.
