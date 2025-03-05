@@ -1046,7 +1046,7 @@ function Main()
     -----------------------------------------------------------------------------
     i_count = tonumber(GetInventoryFreeSlotCount())
     --wait while gathering status
-    while (not (i_count < num_inventory_free_slot_threshold)) and (not CanExtractMateria(100)) do
+    while (not (i_count < num_inventory_free_slot_threshold)) and (not do_extract or (not CanExtractMateria(100))) do
         yield("/wait " .. interval_rate * 300)
         i_count = tonumber(GetInventoryFreeSlotCount())
         yield("/echo [LegendaryFarmer] Gathering...")
