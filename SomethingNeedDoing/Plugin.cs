@@ -48,7 +48,7 @@ public sealed class Plugin : IDalamudPlugin
 
             Service.AutoRetainerApi.OnCharacterPostprocessStep += CheckCharacterPostProcess;
             Service.AutoRetainerApi.OnCharacterReadyToPostProcess += DoCharacterPostProcess;
-            _ = new EzFrameworkUpdate(CheckForMacroCompletion);
+            //_ = new EzFrameworkUpdate(CheckForMacroCompletion);
         });
     }
 
@@ -85,6 +85,7 @@ public sealed class Plugin : IDalamudPlugin
         {
             Svc.Log.Debug("Enqueue post process macro for current character.");
             RunningPostProcess = true;
+            Service.MacroManager.OnMacroCompleted += OnPostProcessMacroCompleted;
             Service.MacroManager.EnqueueMacro(C.ARCharacterPostProcessMacro);
         }
         else
@@ -93,7 +94,18 @@ public sealed class Plugin : IDalamudPlugin
             Service.AutoRetainerApi.FinishCharacterPostProcess();
         }
     }
-
+    private void OnPostProcessMacroCompleted(MacroNode node)
+    {
+        if (node.IsPostProcess)
+        {
+            Svc.Framework.RunOnFrameworkThread(() =>
+            {
+                Svc.Log.Debug("Finishing post process macro for current character.");
+                Service.AutoRetainerApi.FinishCharacterPostProcess();
+            });
+            Service.MacroManager.OnMacroCompleted -= OnPostProcessMacroCompleted;
+        }
+    }
     private void CheckForMacroCompletion()
     {
         if (!RunningPostProcess) return;
