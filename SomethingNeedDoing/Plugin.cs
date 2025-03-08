@@ -72,7 +72,10 @@ public sealed class Plugin : IDalamudPlugin
         if (C.ARCharacterPostProcessExcludedCharacters.Any(x => x == Svc.ClientState.LocalContentId))
             Svc.Log.Info("Skipping post process macro for current character.");
         else
+        {
+            Svc.Log.Debug("Requesting post process macro for current character.");
             Service.AutoRetainerApi.RequestCharacterPostprocess();
+        }
     }
 
     private bool RunningPostProcess;
@@ -80,6 +83,7 @@ public sealed class Plugin : IDalamudPlugin
     {
         if (C.ARCharacterPostProcessMacro != null)
         {
+            Svc.Log.Debug("Enqueue post process macro for current character.");
             RunningPostProcess = true;
             Service.MacroManager.EnqueueMacro(C.ARCharacterPostProcessMacro);
         }
@@ -95,6 +99,7 @@ public sealed class Plugin : IDalamudPlugin
         if (!RunningPostProcess) return;
         if (Service.MacroManager.State != LoopState.Running)
         {
+            Svc.Log.Debug("Finishing post process macro for current character.");
             RunningPostProcess = false;
             Service.AutoRetainerApi.FinishCharacterPostProcess();
         }
